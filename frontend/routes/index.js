@@ -4,50 +4,10 @@ var _ = require('lodash');
 var path = require('path');
 var Multer = require('multer');
 var request = require('request');
+var CXRStorage = require('../helpers/CXRStorage');
 
 
-// google cloud storage
-const Storage = require('@google-cloud/storage');
-const storage = Storage({
-  projectId: 'xray-bme'
-});
-
-const CLOUD_BUCKET = 'demo-xray'
-const bucket = storage.bucket(CLOUD_BUCKET);
-function getPublicUrl (filename) {
-  return `https://storage.googleapis.com/${CLOUD_BUCKET}/${filename}`;
-}
-
-function sendUploadToGCS (req, res, next) {
-  if (!req.file) {
-    return next();
-  }
-
-  const gcsname = Date.now() + req.file.originalname;
-  const file = bucket.file(`upload/${gcsname}`);
-
-  const stream = file.createWriteStream({
-    metadata: {
-      contentType: req.file.mimetype
-    },
-    resumable: false
-  });
-
-  stream.on('error', (err) => {
-    req.file.cloudStorageError = err;
-    next(err);
-  });
-
-  stream.on('finish', () => {
-    req.file.cloudStorageObject = gcsname;
-    file.makePublic().then(() => {
-      req.file.cloudStoragePublicUrl = getPublicUrl(gcsname);
-      next();
-    });
-  });
-
-  stream.end(req.file.buffer);
-}
+var storage = CXRStorage();
 
 // mutter
 var fileFilter = function(req, file, cb) {
@@ -61,7 +21,7 @@ var fileFilter = function(req, file, cb) {
 };
 
 var mutter = Multer({
-  storage: Multer.MemoryStorage,
+  storage: storage,
   limits: {
     files: 1,
     fileSize: 5 * 1024 * 1024 // no larger than 5mb
@@ -74,44 +34,25 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Chest X-ray', cxr_field: 'cxr'});
 });
 
-// router.post('/upload', function(req, res, next) {
 
-//     options = {
+router.post('/upload', mutter.single('cxr'), function(req, res, next) {
+	var file = req.file.filename;
 
-//       uri: 'https://backend-phyiarpd7q-uc.a.run.app/cxr',
-//       method: 'POST',
-//       json: {
-//         image_name: 'TEST.JPG'
-//       }
-//     }
+	options = {
+		uri: 'http://127.0.0.1:5002/cxr',
+		method: 'POST',
+		json: {
+			image_name: file
+		}
+	}
 
-// 	  request(options, (err, result, body) => {
-// 	    if (err) { return console.log(err);  }
-// 	   	  res.render('upload', {title: 'Result', body: body})
-// 	  })
-// })
 
-router.post(
-  '/upload',
-  mutter.single('cxr'),
-  sendUploadToGCS,
-  function(req, res, next) {
-
-    console.log(req.file)
-
-    options = {
-      uri: 'https://backend-phyiarpd7q-uc.a.run.app/cxr',
-      method: 'POST',
-      json: {
-        image_name: req.file.cloudStorageObject
-      }
-    }
-
-	  request(options, (err, result, body) => {
-	    if (err) { return console.log(err);  }
-	   	  res.render('upload', {title: 'Result', body: body})
-	  })
+	request(options, (err, result, body) => {
+		if (err) { return console.log(err); }
+		res.render('upload', {title: 'Result', body: body})
+	})
 
 });
+
 
 module.exports = router;
