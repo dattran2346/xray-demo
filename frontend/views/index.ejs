@@ -7,28 +7,26 @@
 	</head>
     <body>
   	    <div class='row' >
-  		    <div class="column" style="margin-right:50px">
-  				<img src="/images/results/<%= body.image_name %>" height=896 width=896>
+  		    <div class="column" style="margin-right:50px" height=896 width=896>
+  				<img src="/images/results/<%= body.image_name %>" onerror="this.src='/images/vin.png'" height=896 width=896>
   		    </div>
   			
   			<div class='column' >
 				<div class="row">
-					<div class='column'>
-						<form action='/upload' method='POST' enctype='multipart/form-data'>
-							<input type='file' name='<%= cxr_field %>' >
-							<button type='submit' class='btn btn-primary' color=''>Upload</button>
-						</form>
-					</div>
 					<div class="column">
-						<img src="/images/results/<%= body.image_name %>" height=64 width=64>
+						<div style="text-align: center"><img src="/images/vin.png" height=64 width=64></div>
+						<form action='/upload' method='POST' enctype='multipart/form-data'>
+							<input type="file" name='<%= cxr_field %>' />
+							<button type='submit' >Chuẩn đoán</button>
+						</form>
 					</div>
 				</div>
   				<div class=row>
 					<table class='table'>
 						<thead>
 							<tr>
-								<th>Disease</th>
-								<th>Probability</th>
+								<th>Bệnh</th>
+								<th>Tỷ lệ</th>
 							</tr>
 						</thead>
 						<tbody>
@@ -42,6 +40,8 @@
 					</table>
 				</div>
   			</div>
-  	    </div>
-    </body>
+		  </div>
+	</body>
+	
+	
 </html>
