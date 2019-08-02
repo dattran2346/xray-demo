@@ -29,11 +29,15 @@ var mutter = Multer({
   fileFilter: fileFilter
 })
 
+var default_body = {
+	image_name: '',
+}
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Chest X-ray', cxr_field: 'cxr'});
+//   res.render('index', { title: 'Chest X-ray', cxr_field: 'cxr'});
+	res.render('index', {cxr_field: 'cxr', body: default_body})
 });
-
 
 router.post('/upload', mutter.single('cxr'), function(req, res, next) {
 	var file = req.file.filename;
@@ -49,7 +53,7 @@ router.post('/upload', mutter.single('cxr'), function(req, res, next) {
 
 	request(options, (err, result, body) => {
 		if (err) { return console.log(err); }
-		res.render('upload', {title: 'Result', body: body})
+		res.render('index', {cxr_field: 'cxr', body: body})
 	})
 
 });

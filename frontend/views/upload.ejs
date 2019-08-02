@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <!-- <title><%= title %></title> -->
     <link rel='stylesheet' href='/stylesheets/style.css' />
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
@@ -15,7 +15,7 @@
 						<table class='table'>
 							<thead>
 								<tr>
-									<th>Disease</th>
+									<th>Bệnh</th>
 									<th>Probability</th>
 								</tr>
 							</thead>
@@ -30,14 +30,11 @@
 						</table>
 					</th>
 				</tr>
-				<!-- <tr> -->
-				<!-- 	<th style="text-align:center"><img src="https://storage.googleapis.com/demo-xray/seg/<%= body.image_name %>" height=512 width=512></th> -->
-				<!-- 	<th><img src="https://storage.googleapis.com/demo-xray/cam/<%= body.image_name %>" height=512 width=512></th> -->
-				<!-- </tr> -->
 			</tbody>
 		</table>
+		<!-- <form action='/upload' method='POST' enctype='multipart/form-data'>
+			<input type='file' name='<%= cxr_field %>' >
+			<button type='submit' class='btn btn-primary'>Upload</button>
+		</form> -->
   </body>
-	<footer>
-		<h3 class='text-center'>Made with ❤ in Vietnam</h3>
-	</footer>
 </html>
