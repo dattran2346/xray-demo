@@ -30,13 +30,17 @@ var mutter = Multer({
 })
 
 var default_body = {
-	image_name: '',
+	image_name: 'default.jpg',
+	result: {
+		
+
+	}
 }
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
 //   res.render('index', { title: 'Chest X-ray', cxr_field: 'cxr'});
-	res.render('index', {cxr_field: 'cxr', body: default_body})
+	res.render('index', {body: default_body})
 });
 
 router.post('/upload', mutter.single('cxr'), function(req, res, next) {
@@ -53,7 +57,7 @@ router.post('/upload', mutter.single('cxr'), function(req, res, next) {
 
 	request(options, (err, result, body) => {
 		if (err) { return console.log(err); }
-		res.render('index', {cxr_field: 'cxr', body: body})
+		res.render('index', {body: body})
 	})
 
 });

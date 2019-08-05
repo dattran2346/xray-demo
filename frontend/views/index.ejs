@@ -3,45 +3,87 @@
     <head>
 		<link rel='stylesheet' href='/stylesheets/style.css' />
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<title>VinBDI</title>
 	</head>
     <body>
-  	    <div class='row' >
-  		    <div class="column" style="margin-right:50px" height=896 width=896>
-  				<img src="/images/results/<%= body.image_name %>" onerror="this.src='/images/vin.png'" height=896 width=896>
-  		    </div>
-  			
-  			<div class='column' >
-				<div class="row">
-					<div class="column">
-						<div style="text-align: center"><img src="/images/vin.png" height=64 width=64></div>
-						<form action='/upload' method='POST' enctype='multipart/form-data'>
-							<input type="file" name='<%= cxr_field %>' />
-							<button type='submit' >Chuẩn đoán</button>
-						</form>
+
+		<nav class="navbar">
+			<a class="navbar-brand" href="/">
+				<!-- <img src="/images/vin.png" alt=""> -->
+				Vingroup Big Data Institute - Công cụ chẩn đoán bệnh trên ảnh x-quang
+			</a>
+		</nav>
+
+		<div>
+			<main class="container" style="width: 80%;text-align: center;">
+				<div class='row' >
+					<div class="col-lg-6 image-container">
+						<img class="img-fluid" id='img-result' src="/images/results/<%= body.image_name %>">
+					</div>
+					
+					<div class='col-lg-6' style="text-align: center;">
+						<div class="row" style="display: inline-block; width: 100%;">
+							<div class="column">
+								<div class="file-upload">
+									<button class="file-upload-btn" id='btn-upload' type="button" onclick="$('.file-upload-input').trigger( 'click' )">Tải ảnh lên</button>
+						
+									<div class="image-upload-wrap" id='upload-wrapper' hidden>
+										<form 
+										class="form-group"
+										action="/upload" 
+										method="POST" 
+										enctype="multipart/form-data">
+											<input class="file-upload-input" type='file' onchange="readURL(this);" accept="image/*" name="cxr"/>
+											<input class="btn btn-submit" id='btn-submit' type="submit" value="Diagnose" hidden>Chẩn đoán</button>
+										</form>
+										<div class="drag-text">
+											<h3>hoặc kéo thả ảnh vào đây</h3>
+										</div>
+									</div>
+									
+									<button class="file-submit-btn" type="button" id='btn-diagnose' onclick="$('.btn-submit').trigger( 'click' )" class="remove-image" 
+											style="background-color: #a90531">Chẩn đoán</button>
+								</div>
+							</div>
+						</div>
+				
+						<div class="row" style="display: inline-block; width: 100%;margin-left: 8px;">
+							<table class="table" style="margin: 0px auto;float: right;">
+								<thead>
+									<tr>
+										<th>Bệnh</th>
+										<th>Tỷ lệ</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% for (d in body.result) {%>
+										<tr>
+											<th><%= d %></th>
+											<th><%= (body.result[d] * 100).toFixed(2) %>%</th>
+										</tr>
+									<% } %>
+								</tbody>
+							</table>
+						</div>
 					</div>
 				</div>
-  				<div class=row>
-					<table class='table'>
-						<thead>
-							<tr>
-								<th>Bệnh</th>
-								<th>Tỷ lệ</th>
-							</tr>
-						</thead>
-						<tbody>
-							<% for (d in body.result) {%>
-								<tr>
-									<th><%= d %></th>
-									<th><%= (body.result[d] * 100).toFixed(2) %>%</th>
-								</tr>
-							<% } %>
-						</tbody>
-					</table>
-				</div>
-  			</div>
-		  </div>
+				<script>
+					function readURL(input) {
+						if (input.files && input.files[0]) {
+	
+							var reader = new FileReader();
+	
+							reader.onload = function(e) {
+								$('#img-result').attr('src', e.target.result);
+							};
+	
+							reader.readAsDataURL(input.files[0]);
+						}
+					}
+						
+				</script>
+			</main>
+		</div>
 	</body>
-	
-	
 </html>
